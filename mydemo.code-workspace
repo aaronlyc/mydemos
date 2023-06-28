@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "path": "operator",
+      "name": "operator"
+    },
+    {
+      "path": ".",
+      "name": "root"
+    }
+  ],
+  "settings": {
+    "go.toolsEnvVars": {
+      "GOPROXY": "https://mirrors.aliyun.com/goproxy,direct",
+      "GONOPROXY": "none;"
+    }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "go",
+        "request": "launch",
+        "name": "operator",
+        "cwd": "${workspaceFolder:operator}",
+        "program": "${workspaceFolder:operator}/"
+      }
+    ]
+    // "compounds": [
+    //   {
+    //     "name": "Both (Backend & Frontend)",
+    //     "configurations": [
+    //       "operator",
+    //       "Frontend"
+    //     ],
+    //     "stopAll": true
+    //   }
+    // ]
+  }
+}

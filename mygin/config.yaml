@@ -1,0 +1,65 @@
+# zap logger configuration
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[mydemos/mygin]'
+  director: 'log'
+  show-line: true
+  encode-level: 'LowercaseColorLevelEncoder'
+  stacktrace-key: 'stacktrace'
+  log-in-console: true
+
+# redis configuration
+#redis:
+#  db: 0
+#  addr: '127.0.0.1:6379'
+#  password: ''
+
+# system configuration
+system:
+  env: 'develop'  # Change to "develop" to skip authentication for development mode
+  addr: 8888
+  db-type: 'mysql'
+
+# mysql connect configuration
+# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://www.github.com/flipped-aurora/gin-vue-admin/server.com/docs/first）
+mysql:
+  path: '101.33.243.25'
+  port: '3306'
+  config: ''
+  db-name: 'test'
+  username: 'root'
+  password: 'root'
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""
+  log-zap: false
+
+# pgsql connect configuration
+# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://www.github.com/flipped-aurora/gin-vue-admin/server.com/docs/first）
+pgsql:
+  path: ''
+  port: ''
+  config: ''
+  db-name: ''
+  username: ''
+  password: ''
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""
+  log-zap: false
+
+db-list:
+  - disabled: true # 是否启用
+    type: "mysql" # 数据库的类型,目前支持mysql、pgsql
+    alias-name: "" # 数据库的名称,注意: alias-name 需要在db-list中唯一
+    path: ''
+    port: ''
+    config: ''
+    db-name: ''
+    username: ''
+    password: ''
+    max-idle-conns: 10
+    max-open-conns: 100
+    log-mode: ""
+    log-zap: false
