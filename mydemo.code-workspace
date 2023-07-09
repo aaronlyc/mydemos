@@ -1,8 +1,12 @@
 {
   "folders": [
+    // {
+    //   "path": "sample-controller",
+    //   "name": "sample-controller"
+    // },
     {
-      "path": "operator",
-      "name": "operator"
+      "path": "sample-controller-manager",
+      "name": "sample-controller-manager"
     },
     {
       "path": ".",
