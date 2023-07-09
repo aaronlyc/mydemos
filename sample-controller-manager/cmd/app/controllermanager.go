@@ -34,7 +34,6 @@ import (
 	"k8s.io/client-go/tools/leaderelection/resourcelock"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/configz"
-	logsapi "k8s.io/component-base/logs/api/v1"
 	controllersmetrics "k8s.io/component-base/metrics/prometheus/controllers"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
@@ -75,9 +74,9 @@ func NewControllerManagerCommand() *cobra.Command {
 
 			// Activate logging as soon as possible, after that
 			// show flags with the final logging configuration.
-			if err := logsapi.ValidateAndApply(s.Logs, utilfeature.DefaultFeatureGate); err != nil {
-				return err
-			}
+			// if err := logsapi.ValidateAndApply(s.Logs, utilfeature.DefaultFeatureGate); err != nil {
+			// 	return err
+			// }
 			cliflag.PrintFlags(cmd.Flags())
 
 			c, err := s.Config(KnownControllers(), ControllersDisabledByDefault.List())
