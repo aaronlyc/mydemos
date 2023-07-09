@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	_ "time/tzdata" // for CronJob Time Zone support
 
 	"mydemos/sample-controller-manager/cmd/app"
 
