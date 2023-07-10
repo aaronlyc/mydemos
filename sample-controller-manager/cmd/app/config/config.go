@@ -17,8 +17,8 @@ type Config struct {
 	// LoopbackClientConfig is a config for a privileged loopback connection
 	LoopbackClientConfig *restclient.Config
 
-	Authentication apiserver.AuthenticationInfo
-	Authorization  apiserver.AuthorizationInfo
+	// Authentication apiserver.AuthenticationInfo
+	// Authorization  apiserver.AuthorizationInfo
 
 	// 一般的k8s client
 	Client *clientset.Clientset
@@ -44,7 +44,7 @@ type CompletedConfig struct {
 func (c *Config) Complete() *CompletedConfig {
 	cc := completedConfig{c}
 
-	apiserver.AuthorizeClientBearerToken(c.LoopbackClientConfig, &c.Authentication, &c.Authorization)
+	// apiserver.AuthorizeClientBearerToken(c.LoopbackClientConfig, &c.Authentication, &c.Authorization)
 
 	return &CompletedConfig{&cc}
 }

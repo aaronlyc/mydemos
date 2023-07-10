@@ -7,7 +7,6 @@ import (
 	"mydemos/sample-controller-manager/cmd/app/config"
 	"mydemos/sample-controller-manager/cmd/app/options"
 	apisconfig "mydemos/sample-controller-manager/pkg/controller/apis/config"
-	"net/http"
 	"os"
 	"time"
 
@@ -23,17 +22,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/uuid"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/server/healthz"
-	"k8s.io/apiserver/pkg/server/mux"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/client-go/informers"
 	v1core "k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/client-go/metadata"
-	"k8s.io/client-go/metadata/metadatainformer"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/leaderelection"
 	"k8s.io/client-go/tools/leaderelection/resourcelock"
 	cliflag "k8s.io/component-base/cli/flag"
-	"k8s.io/component-base/configz"
 	controllersmetrics "k8s.io/component-base/metrics/prometheus/controllers"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
@@ -41,7 +36,6 @@ import (
 	"k8s.io/controller-manager/controller"
 	"k8s.io/controller-manager/pkg/clientbuilder"
 	controllerhealthz "k8s.io/controller-manager/pkg/healthz"
-	"k8s.io/controller-manager/pkg/informerfactory"
 	"k8s.io/controller-manager/pkg/leadermigration"
 	"k8s.io/klog/v2"
 )
@@ -126,11 +120,11 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 	defer c.EventBroadcaster.Shutdown()
 
 	// 2. 在k8s中创建config的配置
-	if cfgz, err := configz.New(ConfigzName); err == nil {
-		cfgz.Set(c.ComponentConfig)
-	} else {
-		logger.Error(err, "Unable to register configz")
-	}
+	// if cfgz, err := configz.New(ConfigzName); err == nil {
+	// 	cfgz.Set(c.ComponentConfig)
+	// } else {
+	// 	logger.Error(err, "Unable to register configz")
+	// }
 
 	// 3. Setup any healthz checks we will want to use.
 	var checks []healthz.HealthChecker
@@ -143,18 +137,18 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 
 	// 4. Start the controller manager HTTP server
 	// unsecuredMux is the handler for these controller *after* authn/authz filters have been applied
-	var unsecuredMux *mux.PathRecorderMux
-	if c.SecureServing != nil {
-		unsecuredMux = genericcontrollermanager.NewBaseHandler(&c.ComponentConfig.Generic.Debugging, healthzHandler)
-		// if utilfeature.DefaultFeatureGate.Enabled(features.ComponentSLIs) {
-		// 	slis.SLIMetricsWithReset{}.Install(unsecuredMux)
-		// }
-		handler := genericcontrollermanager.BuildHandlerChain(unsecuredMux, &c.Authorization, &c.Authentication)
-		// TODO: handle stoppedCh and listenerStoppedCh returned by c.SecureServing.Serve
-		if _, _, err := c.SecureServing.Serve(handler, 0, stopCh); err != nil {
-			return err
-		}
-	}
+	// var unsecuredMux *mux.PathRecorderMux
+	// if c.SecureServing != nil {
+	// 	unsecuredMux = genericcontrollermanager.NewBaseHandler(&c.ComponentConfig.Generic.Debugging, healthzHandler)
+	// 	// if utilfeature.DefaultFeatureGate.Enabled(features.ComponentSLIs) {
+	// 	// 	slis.SLIMetricsWithReset{}.Install(unsecuredMux)
+	// 	// }
+	// 	handler := genericcontrollermanager.BuildHandlerChain(unsecuredMux, &c.Authorization, &c.Authentication)
+	// 	// TODO: handle stoppedCh and listenerStoppedCh returned by c.SecureServing.Serve
+	// 	if _, _, err := c.SecureServing.Serve(handler, 0, stopCh); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	clientBuilder, rootClientBuilder := createClientBuilders(logger, c)
 
@@ -167,14 +161,14 @@ func Run(ctx context.Context, c *config.CompletedConfig) error {
 			klog.FlushAndExit(klog.ExitFlushTimeout, 1)
 		}
 		controllerInitializers := initializersFunc()
-		if err := StartControllers(ctx, controllerContext, controllerInitializers, unsecuredMux, healthzHandler); err != nil {
+		if err := StartControllers(ctx, controllerContext, controllerInitializers, healthzHandler); err != nil {
 			logger.Error(err, "Error starting controllers")
 			klog.FlushAndExit(klog.ExitFlushTimeout, 1)
 		}
 
 		controllerContext.InformerFactory.Start(stopCh)
-		controllerContext.ObjectOrMetadataInformerFactory.Start(stopCh)
-		close(controllerContext.InformersStarted)
+		// controllerContext.ObjectOrMetadataInformerFactory.Start(stopCh)
+		// close(controllerContext.InformersStarted)
 
 		<-ctx.Done()
 	}
@@ -276,7 +270,7 @@ type ControllerContext struct {
 	// and dynamic resources by their metadata. All generic controllers currently use
 	// object metadata - if a future controller needs access to the full object this
 	// would become GenericInformerFactory and take a dynamic client.
-	ObjectOrMetadataInformerFactory informerfactory.InformerFactory
+	// ObjectOrMetadataInformerFactory informerfactory.InformerFactory
 
 	// ComponentConfig provides access to init options for a given controller
 	ComponentConfig apisconfig.ControllerManagerConfiguration
@@ -300,7 +294,7 @@ type ControllerContext struct {
 
 	// InformersStarted is closed after all of the controllers have been initialized and are running.  After this point it is safe,
 	// for an individual controller to start the shared informers. Before it is closed, they should not.
-	InformersStarted chan struct{}
+	// InformersStarted chan struct{}
 
 	// ResyncPeriod generates a duration each time it is invoked; this is so that
 	// multiple controllers don't get into lock-step and all hammer the apiserver
@@ -399,8 +393,8 @@ func CreateControllerContext(logger klog.Logger, s *config.CompletedConfig, root
 	versionedClient := rootClientBuilder.ClientOrDie("shared-informers")
 	sharedInformers := informers.NewSharedInformerFactory(versionedClient, ResyncPeriod(s)())
 
-	metadataClient := metadata.NewForConfigOrDie(rootClientBuilder.ConfigOrDie("metadata-informers"))
-	metadataInformers := metadatainformer.NewSharedInformerFactory(metadataClient, ResyncPeriod(s)())
+	// metadataClient := metadata.NewForConfigOrDie(rootClientBuilder.ConfigOrDie("metadata-informers"))
+	// metadataInformers := metadatainformer.NewSharedInformerFactory(metadataClient, ResyncPeriod(s)())
 
 	// If apiserver is not running we should wait for some time and fail only then. This is particularly
 	// important when we start apiserver and controller manager at the same time.
@@ -428,15 +422,15 @@ func CreateControllerContext(logger klog.Logger, s *config.CompletedConfig, root
 	// }
 
 	ctx := ControllerContext{
-		ClientBuilder:                   clientBuilder,
-		InformerFactory:                 sharedInformers,
-		ObjectOrMetadataInformerFactory: informerfactory.NewInformerFactory(sharedInformers, metadataInformers),
-		ComponentConfig:                 s.ComponentConfig,
+		ClientBuilder:   clientBuilder,
+		InformerFactory: sharedInformers,
+		// ObjectOrMetadataInformerFactory: informerfactory.NewInformerFactory(sharedInformers, metadataInformers),
+		ComponentConfig: s.ComponentConfig,
 		// RESTMapper:                      restMapper,
 		AvailableResources: availableResources,
 		// Cloud:                           cloud,
 		// LoopMode:                        loopMode,
-		InformersStarted:         make(chan struct{}),
+		// InformersStarted:         make(chan struct{}),
 		ResyncPeriod:             ResyncPeriod(s),
 		ControllerManagerMetrics: controllersmetrics.NewControllerManagerMetrics("kube-controller-manager"),
 	}
@@ -445,8 +439,7 @@ func CreateControllerContext(logger klog.Logger, s *config.CompletedConfig, root
 }
 
 // StartControllers starts a set of controllers with a specified ControllerContext
-func StartControllers(ctx context.Context, controllerCtx ControllerContext, controllers map[string]InitFunc,
-	unsecuredMux *mux.PathRecorderMux, healthzHandler *controllerhealthz.MutableHealthzHandler) error {
+func StartControllers(ctx context.Context, controllerCtx ControllerContext, controllers map[string]InitFunc, healthzHandler *controllerhealthz.MutableHealthzHandler) error {
 	logger := klog.FromContext(ctx)
 
 	var controllerChecks []healthz.HealthChecker
@@ -482,13 +475,13 @@ func StartControllers(ctx context.Context, controllerCtx ControllerContext, cont
 		if ctrl != nil {
 			// check if the controller supports and requests a debugHandler
 			// and it needs the unsecuredMux to mount the handler onto.
-			if debuggable, ok := ctrl.(controller.Debuggable); ok && unsecuredMux != nil {
-				if debugHandler := debuggable.DebuggingHandler(); debugHandler != nil {
-					basePath := "/debug/controllers/" + controllerName
-					unsecuredMux.UnlistedHandle(basePath, http.StripPrefix(basePath, debugHandler))
-					unsecuredMux.UnlistedHandlePrefix(basePath+"/", http.StripPrefix(basePath, debugHandler))
-				}
-			}
+			// if debuggable, ok := ctrl.(controller.Debuggable); ok && unsecuredMux != nil {
+			// 	if debugHandler := debuggable.DebuggingHandler(); debugHandler != nil {
+			// 		basePath := "/debug/controllers/" + controllerName
+			// 		unsecuredMux.UnlistedHandle(basePath, http.StripPrefix(basePath, debugHandler))
+			// 		unsecuredMux.UnlistedHandlePrefix(basePath+"/", http.StripPrefix(basePath, debugHandler))
+			// 	}
+			// }
 			if healthCheckable, ok := ctrl.(controller.HealthCheckable); ok {
 				if realCheck := healthCheckable.HealthChecker(); realCheck != nil {
 					check = controllerhealthz.NamedHealthChecker(controllerName, realCheck)

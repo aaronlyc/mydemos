@@ -39,11 +39,11 @@ type ControllerManagerOptions struct {
 	// TODO: here is the custormer controller options
 	SampleController *SampleControllerOptions
 
-	SecureServing  *apiserveroptions.SecureServingOptionsWithLoopback
-	Authentication *apiserveroptions.DelegatingAuthenticationOptions
-	Authorization  *apiserveroptions.DelegatingAuthorizationOptions
-	Metrics        *metrics.Options
-	Logs           *logs.Options
+	SecureServing *apiserveroptions.SecureServingOptionsWithLoopback
+	// Authentication *apiserveroptions.DelegatingAuthenticationOptions
+	// Authorization  *apiserveroptions.DelegatingAuthorizationOptions
+	Metrics *metrics.Options
+	Logs    *logs.Options
 
 	Master                      string
 	ShowHiddenMetricsForVersion string
@@ -56,20 +56,20 @@ func NewControllerManagerOptions() (*ControllerManagerOptions, error) {
 	}
 
 	s := ControllerManagerOptions{
-		Generic:        cmoptions.NewGenericControllerManagerConfigurationOptions(&componentConfig.Generic),
-		SecureServing:  apiserveroptions.NewSecureServingOptions().WithLoopback(),
-		Authentication: apiserveroptions.NewDelegatingAuthenticationOptions(),
-		Authorization:  apiserveroptions.NewDelegatingAuthorizationOptions(),
-		Metrics:        metrics.NewOptions(),
-		Logs:           logs.NewOptions(),
+		Generic:       cmoptions.NewGenericControllerManagerConfigurationOptions(&componentConfig.Generic),
+		SecureServing: apiserveroptions.NewSecureServingOptions().WithLoopback(),
+		// Authentication: apiserveroptions.NewDelegatingAuthenticationOptions(),
+		// Authorization:  apiserveroptions.NewDelegatingAuthorizationOptions(),
+		Metrics: metrics.NewOptions(),
+		Logs:    logs.NewOptions(),
 
 		SampleController: &SampleControllerOptions{
 			&componentConfig.Samplecontroller,
 		},
 	}
 
-	s.Authentication.RemoteKubeConfigFileOptional = true
-	s.Authorization.RemoteKubeConfigFileOptional = true
+	// s.Authentication.RemoteKubeConfigFileOptional = true
+	// s.Authorization.RemoteKubeConfigFileOptional = true
 
 	// Set the PairName but leave certificate directory blank to generate in-memory by default
 	s.SecureServing.ServerCert.CertDirectory = ""
@@ -113,14 +113,14 @@ func (o *ControllerManagerOptions) ApplyTo(c *appconfig.Config) error {
 	if err := o.SecureServing.ApplyTo(&c.SecureServing, &c.LoopbackClientConfig); err != nil {
 		return err
 	}
-	if o.SecureServing.BindPort != 0 || o.SecureServing.Listener != nil {
-		if err := o.Authentication.ApplyTo(&c.Authentication, c.SecureServing, nil); err != nil {
-			return err
-		}
-		if err := o.Authorization.ApplyTo(&c.Authorization); err != nil {
-			return err
-		}
-	}
+	// if o.SecureServing.BindPort != 0 || o.SecureServing.Listener != nil {
+	// 	if err := o.Authentication.ApplyTo(&c.Authentication, c.SecureServing, nil); err != nil {
+	// 		return err
+	// 	}
+	// 	if err := o.Authorization.ApplyTo(&c.Authorization); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	// TODO: custom controller applyto
 	if err := o.SampleController.ApplyTo(&c.ComponentConfig.Samplecontroller); err != nil {

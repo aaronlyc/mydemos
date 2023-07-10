@@ -25,6 +25,9 @@ func startSampleController(ctx context.Context, controllerContext ControllerCont
 		controllerContext.InformerFactory.Apps().V1().Deployments(),
 		exampleInformerFactory.Samplecontroller().V1alpha1().Foos(),
 	)
+
+	exampleInformerFactory.Start(ctx.Done())
+
 	go samplecontroller.Run(ctx, int(controllerContext.ComponentConfig.Samplecontroller.ConcurrentSampleSyncs))
 	return nil, true, nil
 }
