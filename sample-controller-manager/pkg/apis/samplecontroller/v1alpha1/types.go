@@ -6,6 +6,9 @@ import (
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:status
+//+kubebuilder:storageversion
 
 // Foo is a specification for a Foo resource
 type Foo struct {
@@ -13,18 +16,19 @@ type Foo struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Spec   FooSpec   `json:"spec"`
-	Status FooStatus `json:"status"`
+	Status FooStatus `json:"status,omitempty"`
 }
 
 // FooSpec is the spec for a Foo resource
 type FooSpec struct {
-	DeploymentName string `json:"deploymentName"`
-	Replicas       *int32 `json:"replicas"`
+	DeploymentName string `json:"deploymentName,omitempty"`
+	Replicas       *int32 `json:"replicas,omitempty"`
 }
 
 // FooStatus is the status for a Foo resource
 type FooStatus struct {
-	AvailableReplicas int32 `json:"availableReplicas"`
+	// +optional
+	AvailableReplicas int32 `json:"availableReplicas,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
