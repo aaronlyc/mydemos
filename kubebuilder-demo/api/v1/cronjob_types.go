@@ -1,22 +1,3 @@
-/*
-Copyright 2023 The Kubernetes authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-// +kubebuilder:docs-gen:collapse=Apache License
-
-/*
- */
 package v1
 
 /*
@@ -111,18 +92,6 @@ type CronJobStatus struct {
 }
 
 // +kubebuilder:docs-gen:collapse=old stuff
-
-/*
- Since we'll have more than one version, we'll need to mark a storage version.
- This is the version that the Kubernetes API server uses to store our data.
- We'll chose the v1 version for our project.
-
- We'll use the [`+kubebuilder:storageversion`](/reference/markers/crd.md) to do this.
-
- Note that multiple versions may exist in storage if they were written before
- the storage version changes -- changing the storage version only affects how
- objects are created/updated after the change.
-*/
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status

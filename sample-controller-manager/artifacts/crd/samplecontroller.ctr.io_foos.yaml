@@ -40,9 +40,6 @@ spec:
               replicas:
                 format: int32
                 type: integer
-            required:
-            - deploymentName
-            - replicas
             type: object
           status:
             description: FooStatus is the status for a Foo resource

@@ -5,8 +5,8 @@
     //   "name": "sample-controller"
     // },
     {
-      "path": "sample-controller-manager",
-      "name": "sample-controller-manager"
+      "path": "kubebuilder-demo",
+      "name": "kubebuilder-demo"
     },
     {
       "path": ".",
