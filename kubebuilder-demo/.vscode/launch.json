@@ -9,7 +9,10 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/cmd"
+            "program": "${workspaceFolder}/cmd",
+            "env": {
+                "ENABLE_WEBHOOKS": "false"
+            }
         }
     ]
 }
