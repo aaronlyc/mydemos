@@ -1,13 +1,13 @@
 {
   "folders": [
-    // {
-    //   "path": "sample-controller",
-    //   "name": "sample-controller"
-    // },
     {
-      "path": "kubebuilder-demo",
-      "name": "kubebuilder-demo"
+      "path": "mycmd",
+      "name": "mycmd"
     },
+    // {
+    //   "path": "kubebuilder-demo",
+    //   "name": "kubebuilder-demo"
+    // },
     {
       "path": ".",
       "name": "root"

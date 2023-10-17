@@ -1,0 +1,27 @@
+# permissions for end users to view operators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: operator-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: myetcd-operator
+    app.kubernetes.io/part-of: myetcd-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: operator-viewer-role
+rules:
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - operators
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - operators/status
+  verbs:
+  - get

@@ -1,0 +1,84 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - backups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - backups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - backups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - etcdclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - etcdclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - etcdclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - restores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - restores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - myetcd.aaron.io
+  resources:
+  - restores/status
+  verbs:
+  - get
+  - patch
+  - update

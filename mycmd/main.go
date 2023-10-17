@@ -6,7 +6,6 @@ package main
 
 import "mydemos/mycmd/cmd"
 
-
 //go:generate go mod tidy
 //go:generate make build
 func main() {
