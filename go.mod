@@ -12,3 +12,8 @@ replace (
 	go.etcd.io/etcd/server/v3 => go.etcd.io/etcd/server/v3 v3.5.1
 	google.golang.org/grpc => google.golang.org/grpc v1.40.0
 )
+
+require (
+	gopkg.in/yaml.v3 v3.0.1
+	k8s.io/apimachinery v0.29.3
+)

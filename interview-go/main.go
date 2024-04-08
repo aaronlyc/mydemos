@@ -1,11 +1,7 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"os/exec"
-	"syscall"
-	"time"
+	"mydemos/interview-go/question"
 )
 
 // func main() {
@@ -21,27 +17,5 @@ import (
 // }
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	cmd := exec.CommandContext(ctx, "bash", "/Users/aaron/sleep.sh")
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-	go func() {
-		select {
-		case <-ctx.Done():
-			err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-			if err != nil {
-				fmt.Printf("kill error   : [%v]\n", err)
-			}
-		}
-	}()
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("output:", string(output))
-	fmt.Printf("ctx.Err : [%v]\n", ctx.Err())
-	fmt.Printf("error   : [%v]\n", err)
+	question.GetAbsPath()
 }
