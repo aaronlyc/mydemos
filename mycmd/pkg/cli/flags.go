@@ -2,11 +2,14 @@ package cli
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"io"
 	"strings"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"k8s.io/klog/v2"
 )
 
 const (
@@ -74,5 +77,22 @@ func SetUsageAndHelpFunc(cmd *cobra.Command, fss NamedFlagSets, cols int) {
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		fmt.Fprintf(cmd.OutOrStdout(), "%s\n\n"+usageFmt, cmd.Long, cmd.UseLine())
 		PrintSections(cmd.OutOrStdout(), fss, cols)
+	})
+}
+
+// InitFlags normalizes, parses, then logs the command line flags
+func InitFlags() {
+	pflag.CommandLine.SetNormalizeFunc(WordSepNormalizeFunc)
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+	pflag.VisitAll(func(flag *pflag.Flag) {
+		klog.V(2).Infof("FLAG: --%s=%q", flag.Name, flag.Value)
+	})
+}
+
+// PrintFlags logs the flags in the flagset
+func PrintFlags(flags *pflag.FlagSet) {
+	flags.VisitAll(func(flag *pflag.Flag) {
+		klog.V(1).Infof("FLAG: --%s=%q", flag.Name, flag.Value)
 	})
 }
