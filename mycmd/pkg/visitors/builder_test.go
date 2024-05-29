@@ -1,28 +1,20 @@
 package visitors
 
 import (
-	"io"
-	"reflect"
+	"bytes"
+	"os"
 	"testing"
 )
 
-func TestNewStreamVisitor(t *testing.T) {
-	type args struct {
-		r      io.Reader
-		source string
+func TestStreamVisitor(t *testing.T) {
+	file, err := os.ReadFile("./demo.yaml")
+	if err != nil {
+		t.Errorf(err.Error())
 	}
-	tests := []struct {
-		name string
-		args args
-		want *StreamVisitor
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStreamVisitor(tt.args.r, tt.args.source); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewStreamVisitor() = %v, want %v", got, tt.want)
-			}
-		})
+
+	visitor := NewStreamVisitor(bytes.NewReader(file), "./demo.yaml")
+	err = visitor.Visit(nil)
+	if err != nil {
+		t.Errorf(err.Error())
 	}
 }
